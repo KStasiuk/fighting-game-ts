@@ -1,5 +1,6 @@
 import { canvas, ctx } from '~/modules/context';
 import { Sprite } from '~/modules/Sprite';
+import { events } from '~/modules/events';
 
 (() => {
   ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -10,6 +11,24 @@ import { Sprite } from '~/modules/Sprite';
       y: 10,
     },
     height: 100,
+  });
+  events.setListeners({
+    down: {
+      d: () => {
+        player.settings.velocity.x = 1;
+      },
+      a: () => {
+        player.settings.velocity.x = -1;
+      },
+    },
+    up: {
+      d: () => {
+        player.settings.velocity.x = 0;
+      },
+      a: () => {
+        player.settings.velocity.x = 0;
+      },
+    },
   });
 
   const enemy = new Sprite({
@@ -24,7 +43,6 @@ import { Sprite } from '~/modules/Sprite';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     player.update();
     enemy.update();
-    console.log('animaton');
   }
 
   animate();

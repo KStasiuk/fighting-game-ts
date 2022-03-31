@@ -29,6 +29,7 @@ export class Sprite {
     this.draw();
     const { position, velocity, height } = this.settings;
     position.y += velocity.y;
+    position.x += velocity.x;
     if (position.y + height + velocity.y >= canvas.height) {
       velocity.y = 0;
     } else {
