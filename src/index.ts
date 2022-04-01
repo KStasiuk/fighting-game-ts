@@ -3,6 +3,10 @@ import { Sprite } from '~/modules/Sprite';
 import { events } from '~/modules/events';
 
 (() => {
+  const keys = {
+    a: false,
+    d: false,
+  };
   ctx.fillRect(0, 0, canvas.width, canvas.height);
   const player = new Sprite({
     position: { x: 123, y: 234 },
@@ -13,22 +17,23 @@ import { events } from '~/modules/events';
     height: 100,
   });
   events.setListeners({
-    down: {
-      d: () => {
-        player.settings.velocity.x = 1;
-      },
-      a: () => {
-        player.settings.velocity.x = -1;
-      },
-    },
-    up: {
-      d: () => {
-        player.settings.velocity.x = 0;
-      },
-      a: () => {
-        player.settings.velocity.x = 0;
-      },
-    },
+    keys,
+    // down: {
+    //   d: () => {
+    //     player.settings.velocity.x = 10;
+    //   },
+    //   a: () => {
+    //     player.settings.velocity.x = -10;
+    //   },
+    // },
+    // up: {
+    //   d: () => {
+    //     player.settings.velocity.x = 0;
+    //   },
+    //   a: () => {
+    //     player.settings.velocity.x = 0;
+    //   },
+    // },
   });
 
   const enemy = new Sprite({
@@ -43,6 +48,12 @@ import { events } from '~/modules/events';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     player.update();
     enemy.update();
+    player.settings.velocity.x = 0;
+    if (keys.a) {
+      player.settings.velocity.x = -1;
+    } else if (keys.d) {
+      player.settings.velocity.x = 1;
+    }
   }
 
   animate();

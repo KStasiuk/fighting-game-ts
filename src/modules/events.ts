@@ -1,13 +1,16 @@
 export type EventHandlers = {
-  up: {
+  keys: {
+    [key: string]: boolean;
+  };
+  up?: {
     [key: string]: () => void;
   };
-  down: {
+  down?: {
     [key: string]: () => void;
   };
 };
 class Events {
-  private eventHandlers: EventHandlers = { up: {}, down: {} };
+  private eventHandlers: EventHandlers = { up: {}, down: {}, keys: {} };
 
   constructor() {
     window.addEventListener('keydown', this.onKeydownHandler, false);
@@ -16,6 +19,7 @@ class Events {
 
   public setListeners(eventHandlers: EventHandlers) {
     this.eventHandlers = {
+      keys: eventHandlers.keys,
       up: {
         ...this.eventHandlers.up,
         ...eventHandlers.up,
@@ -27,14 +31,27 @@ class Events {
     };
   }
 
+  setKeys(key?: string) {
+    if (key && key in this.eventHandlers.keys) {
+      this.eventHandlers.keys[key] = true;
+    } else {
+      this.resetKeys();
+    }
+  }
+  resetKeys() {
+    Object.keys(this.eventHandlers.keys).forEach((key) => {
+      this.eventHandlers.keys[key] = false;
+    });
+  }
+
   private onKeydownHandler = (event: KeyboardEvent) => {
-    console.log('onKeydownHandler', event.key);
-    this.eventHandlers.down[event.key]?.();
+    this.setKeys(event.key);
+    this.eventHandlers.down?.[event.key]?.();
   };
 
   private onKeyupHandler = (event: KeyboardEvent) => {
-    console.log('onKeyupHandler', event.key);
-    this.eventHandlers.up[event.key]?.();
+    this.setKeys();
+    this.eventHandlers.up?.[event.key]?.();
   };
 }
 

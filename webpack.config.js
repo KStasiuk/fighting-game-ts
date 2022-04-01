@@ -2,7 +2,8 @@ const path = require('path');
 
 module.exports = {
   entry: path.resolve(__dirname, 'src', 'index.ts'),
-  mode: 'production',
+  mode: 'development',
+  devtool: 'eval-source-map',
   module: {
     rules: [
       {
