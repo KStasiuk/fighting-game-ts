@@ -8,5 +8,5 @@ Based on [this tutorial](https://www.youtube.com/watch?v=vyqbNFMDRGQ)
 $ yarn install
 
 # serve with hot reload at http://localhost:8080/
-$ yarn serve
+$ yarn dev
 ```

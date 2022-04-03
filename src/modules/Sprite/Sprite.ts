@@ -1,5 +1,5 @@
-import { canvas, ctx } from '~/modules/context';
 import { GRAVITY } from '~/modules/consts';
+import { canvas, ctx } from '~/modules/context';
 import { Events } from '~/modules/Events';
 
 import { MovesKeys, SpriteSettings } from './types';
