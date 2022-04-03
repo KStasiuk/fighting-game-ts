@@ -1,14 +1,21 @@
-import { GRAVITY, JUMP } from '~/modules/consts';
+import { GRAVITY, JUMP, MOVE_SPEED } from '~/modules/consts';
 import { canvas, ctx } from '~/modules/context';
 import { Events } from '~/modules/Events';
 
-import { AttackBox, MovesKeys, SpriteSettings } from './types';
+import { AttackBox, MovesKeys, PressedKeys, SpriteSettings } from './types';
 
 export class Sprite {
-  private keysVertical: { [key: string]: boolean } = {};
-  private keysHorizontal: { [key: string]: boolean } = {};
-  private lastKeysHorizontal = '';
-  private movementSpeed = 5;
+  private verticalKeys: PressedKeys = {};
+  private attackKey: PressedKeys = {};
+  private horizontalKeys: PressedKeys = {};
+  private lastHorizontalKeys = '';
+
+  private movementSpeed = MOVE_SPEED;
+  private _isAttacking = false;
+  get isAttacking() {
+    return this._isAttacking;
+  }
+
   public readonly attackBox: AttackBox;
 
   constructor(public settings: SpriteSettings) {
@@ -19,15 +26,7 @@ export class Sprite {
       color: 'yellow',
     };
     this.assignKeys(this.settings.movesKeys);
-    new Events().setListeners({
-      keys: this.keysVertical,
-    });
-    new Events().setListeners({
-      keys: this.keysHorizontal,
-      lastKey: (value) => {
-        this.lastKeysHorizontal = value;
-      },
-    });
+    this.handleKeyboard();
   }
 
   draw = () => {
@@ -64,17 +63,17 @@ export class Sprite {
     this.settings.velocity.x = 0;
     const {
       settings: { movesKeys },
-      lastKeysHorizontal,
+      lastHorizontalKeys,
     } = this;
-    const leftKeyPressed = this.keysHorizontal[movesKeys.left];
-    const rightKeyPressed = this.keysHorizontal[movesKeys.right];
+    const leftKeyPressed = this.horizontalKeys[movesKeys.left];
+    const rightKeyPressed = this.horizontalKeys[movesKeys.right];
 
-    const upKeyPressed = this.keysVertical[movesKeys.up];
-    const downKeyPressed = this.keysVertical[movesKeys.down];
+    const upKeyPressed = this.verticalKeys[movesKeys.up];
+    const downKeyPressed = this.verticalKeys[movesKeys.down];
 
-    if (leftKeyPressed && lastKeysHorizontal === movesKeys.left) {
+    if (leftKeyPressed && lastHorizontalKeys === movesKeys.left) {
       this.settings.velocity.x = -this.movementSpeed;
-    } else if (rightKeyPressed && lastKeysHorizontal === movesKeys.right) {
+    } else if (rightKeyPressed && lastHorizontalKeys === movesKeys.right) {
       this.settings.velocity.x = this.movementSpeed;
     }
     if (upKeyPressed) {
@@ -84,11 +83,54 @@ export class Sprite {
     }
   }
 
-  private assignKeys(keys: MovesKeys) {
-    this.keysHorizontal[keys.left] = false;
-    this.keysHorizontal[keys.right] = false;
+  private attack() {
+    this._isAttacking = true;
+    setTimeout(() => {
+      this._isAttacking = false;
+    }, 100);
+  }
 
-    this.keysVertical[keys.up] = false;
-    this.keysVertical[keys.down] = false;
+  private assignKeys(keys: MovesKeys) {
+    this.horizontalKeys[keys.left] = false;
+    this.horizontalKeys[keys.right] = false;
+
+    this.verticalKeys[keys.up] = false;
+    this.verticalKeys[keys.down] = false;
+
+    this.attackKey[keys.attack] = false;
+  }
+
+  private handleKeyboard() {
+    const verticalKeys = Object.keys(this.verticalKeys);
+    const horizontalKeys = Object.keys(this.horizontalKeys);
+    const attackKeys = Object.keys(this.attackKey);
+
+    new Events(
+      [...verticalKeys, ...horizontalKeys, ...attackKeys],
+      (key, pressed) => {
+        if (verticalKeys.includes(key)) {
+          resetKeys(this.verticalKeys);
+          this.verticalKeys[key] = pressed;
+        }
+        if (horizontalKeys.includes(key)) {
+          resetKeys(this.horizontalKeys);
+          this.horizontalKeys[key] = pressed;
+        }
+        if (attackKeys.includes(key)) {
+          resetKeys(this.attackKey);
+          this.attack();
+        }
+      },
+      (lastKey) => {
+        if (horizontalKeys.includes(lastKey)) {
+          this.lastHorizontalKeys = lastKey;
+        }
+      },
+    );
+    function resetKeys(keyHandler: { [key: string]: boolean }) {
+      Object.keys(keyHandler).forEach((key) => {
+        keyHandler[key] = false;
+      });
+    }
   }
 }

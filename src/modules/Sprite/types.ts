@@ -8,6 +8,7 @@ export type MovesKeys = {
   right: string;
   up: string;
   down: string;
+  attack: string;
 };
 
 export type SpriteSettings = {
@@ -25,3 +26,5 @@ export type AttackBox = {
   height: number;
   color: string;
 };
+
+export type PressedKeys = { [key: string]: boolean };

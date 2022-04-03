@@ -1,55 +1,24 @@
-export type EventHandlers = {
-  keys: {
-    [key: string]: boolean;
-  };
-
-  lastKey?: (lastKey: string) => void;
-};
 export class Events {
-  private lastKeyDown = '';
-  private eventHandlers: EventHandlers = {
-    keys: {},
-  };
-
-  constructor() {
+  constructor(
+    private keys: string[],
+    private onChange: (key: string, pressed: boolean) => void,
+    private lastKey?: (lastKey: string) => void,
+  ) {
     window.addEventListener('keydown', this.onKeydownHandler, false);
     window.addEventListener('keyup', this.onKeyupHandler, false);
   }
 
-  public setListeners(eventHandlers: EventHandlers) {
-    this.eventHandlers = {
-      lastKey: eventHandlers.lastKey,
-      keys: eventHandlers.keys,
-    };
-  }
-
-  setKeys(key?: string) {
-    if (key && key in this.eventHandlers.keys) {
-      this.eventHandlers.keys[key] = true;
-    } else {
-      this.resetKeys();
-    }
-  }
-  resetKeys() {
-    Object.keys(this.eventHandlers.keys).forEach((key) => {
-      this.eventHandlers.keys[key] = false;
-    });
-  }
-
   private onKeydownHandler = (event: KeyboardEvent) => {
-    if (event.key in this.eventHandlers.keys) {
-      this.lastKeyDown = event.key;
-      this.eventHandlers.lastKey?.(event.key);
-      this.setKeys(event.key);
+    const eventKey = event.key;
+    if (this.keys.includes(eventKey)) {
+      this.onChange(eventKey, true);
+      this.lastKey?.(eventKey);
     }
   };
 
   private onKeyupHandler = (event: KeyboardEvent) => {
-    if (
-      this.lastKeyDown === event.key &&
-      event.key in this.eventHandlers.keys
-    ) {
-      this.setKeys();
+    if (this.keys.includes(event.key)) {
+      this.onChange(event.key, false);
     }
   };
 }

@@ -25,7 +25,8 @@ function detectAttack(player: Sprite, enemy: Sprite, onAttack: () => void) {
     player.attackBox.position.y + player.attackBox.height >=
       enemy.settings.position.y &&
     player.attackBox.position.y <=
-      enemy.settings.position.y + enemy.settings.height
+      enemy.settings.position.y + enemy.settings.height &&
+    player.isAttacking
   ) {
     onAttack();
   }

@@ -13,6 +13,7 @@ export const player = new Sprite({
     right: 'd',
     up: 'w',
     down: 's',
+    attack: 'q',
   },
   color: 'blue',
 });
@@ -27,5 +28,6 @@ export const enemy = new Sprite({
     right: 'ArrowRight',
     up: 'ArrowUp',
     down: 'ArrowDown',
+    attack: ' ',
   },
 });
