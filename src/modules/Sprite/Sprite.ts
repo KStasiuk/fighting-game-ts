@@ -1,30 +1,14 @@
 import { canvas, ctx } from '~/modules/context';
 import { GRAVITY } from '~/modules/consts';
-import { Events } from '~/modules/events';
+import { Events } from '~/modules/Events';
 
-export type Position = {
-  x: number;
-  y: number;
-};
-
-export type MovesKeys = {
-  left: string;
-  right: string;
-  up: string;
-  down: string;
-};
-
-export type SpriteSettings = {
-  position: Position;
-  velocity: Position;
-  movesKeys: MovesKeys;
-  height: number;
-};
+import { MovesKeys, SpriteSettings } from './types';
 
 export class Sprite {
   private keysVertical: { [key: string]: boolean } = {};
   private keysHorizontal: { [key: string]: boolean } = {};
   private lastKeysHorizontal = '';
+  private movementSpeed = 5;
 
   constructor(public settings: SpriteSettings) {
     this.assignKeys(this.settings.movesKeys);
@@ -40,7 +24,7 @@ export class Sprite {
   }
 
   draw = () => {
-    ctx.fillStyle = 'red';
+    ctx.fillStyle = this.settings.color || 'red';
     ctx.fillRect(
       this.settings.position.x,
       this.settings.position.y,
@@ -75,9 +59,9 @@ export class Sprite {
     const downKeyPressed = this.keysVertical[movesKeys.down];
 
     if (leftKeyPressed && lastKeysHorizontal === movesKeys.left) {
-      this.settings.velocity.x = -1;
+      this.settings.velocity.x = -this.movementSpeed;
     } else if (rightKeyPressed && lastKeysHorizontal === movesKeys.right) {
-      this.settings.velocity.x = 1;
+      this.settings.velocity.x = this.movementSpeed;
     }
     if (upKeyPressed) {
       this.settings.velocity.y = -10;

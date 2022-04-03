@@ -13,6 +13,7 @@ export const player = new Sprite({
     up: 'w',
     down: 's',
   },
+  color: 'blue',
 });
 
 export const enemy = new Sprite({
