@@ -6,6 +6,7 @@ export const player = new Sprite({
     x: 0,
     y: 10,
   },
+  width: 50,
   height: 100,
   movesKeys: {
     left: 'a',
@@ -19,6 +20,7 @@ export const player = new Sprite({
 export const enemy = new Sprite({
   position: { x: 123, y: 234 },
   velocity: { x: 0, y: 0 },
+  width: 50,
   height: 150,
   movesKeys: {
     left: 'ArrowLeft',

@@ -16,4 +16,12 @@ export type SpriteSettings = {
   movesKeys: MovesKeys;
   color?: string;
   height: number;
+  width: number;
+};
+
+export type AttackBox = {
+  position: Position;
+  width: number;
+  height: number;
+  color: string;
 };

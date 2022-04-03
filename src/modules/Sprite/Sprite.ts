@@ -1,16 +1,23 @@
-import { GRAVITY } from '~/modules/consts';
+import { GRAVITY, JUMP } from '~/modules/consts';
 import { canvas, ctx } from '~/modules/context';
 import { Events } from '~/modules/Events';
 
-import { MovesKeys, SpriteSettings } from './types';
+import { AttackBox, MovesKeys, SpriteSettings } from './types';
 
 export class Sprite {
   private keysVertical: { [key: string]: boolean } = {};
   private keysHorizontal: { [key: string]: boolean } = {};
   private lastKeysHorizontal = '';
   private movementSpeed = 5;
+  public readonly attackBox: AttackBox;
 
   constructor(public settings: SpriteSettings) {
+    this.attackBox = {
+      position: settings.position,
+      width: 100,
+      height: 50,
+      color: 'yellow',
+    };
     this.assignKeys(this.settings.movesKeys);
     new Events().setListeners({
       keys: this.keysVertical,
@@ -28,10 +35,17 @@ export class Sprite {
     ctx.fillRect(
       this.settings.position.x,
       this.settings.position.y,
-      50,
+      this.settings.width,
       this.settings.height,
     );
+    this.attackBoxDraw();
   };
+
+  attackBoxDraw() {
+    const { position, width, height, color } = this.attackBox;
+    ctx.fillStyle = color;
+    ctx.fillRect(position.x, position.y, width, height);
+  }
 
   update() {
     this.moveSprite();
@@ -64,7 +78,7 @@ export class Sprite {
       this.settings.velocity.x = this.movementSpeed;
     }
     if (upKeyPressed) {
-      this.settings.velocity.y = -10;
+      this.settings.velocity.y = JUMP;
     } else if (downKeyPressed) {
       console.log('down');
     }

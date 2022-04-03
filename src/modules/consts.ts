@@ -1,1 +1,2 @@
-export const GRAVITY = 0.2;
+export const GRAVITY = 0.7;
+export const JUMP = -5;
